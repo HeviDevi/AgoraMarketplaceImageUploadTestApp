@@ -16,7 +16,8 @@ const Image = require('./models/Image-Url');
 const  cloudinary  = require('./config/cloudinary-conn')
 // Multer 
 const upload = require('./utils/multer');
-
+//
+const FileSystem = require('fs');
 
 
 // App
@@ -49,9 +50,12 @@ app.post('/api/upload', upload.single('img'), async (req, res) => {
         if (!req.file) {
             throw new Error('No file uploaded.');
         }
-
+        let multer = req.file;
+        console.log("File processed by multer:", req.file);
         const result = await cloudinary.uploader.upload(req.file.path);
-        console.log("Result:", result);
+        console.log("File uploaded to Cloudinary:", result);
+
+        FileSystem.unlinkSync(req.file.path);
 
         const post_details = {
             title: req.body.title,
@@ -62,9 +66,10 @@ app.post('/api/upload', upload.single('img'), async (req, res) => {
         await Image.create(post_details);
         console.log("MongoDB Doc created:", post_details);
         res.status(200).json({ 
-          message: 'Image uploaded, First response object is the Cloudinry response, Second object is the MongoDB document',
-          result,
-          data: post_details 
+          message: 'Image uploaded, First response object is the Cloudinry response, Second object is the MongoDB document, Third object is the multer object',
+          cloudinary: result,
+          mongoDB: post_details,
+          multer: req.file 
         });
         
     } catch (error) {
