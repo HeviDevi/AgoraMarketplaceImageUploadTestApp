@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Display</title>
+</head>
+<body>
+    <h1>Chosen Image</h1>
+    <% if (chosenImage) { %>
+        <img src="<%= chosenImage %>" alt="Chosen Image">
+    <% } else { %>
+        <p>No image found.</p>
+    <% } %>
+</body>
+</html>
